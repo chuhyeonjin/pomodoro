@@ -8,7 +8,7 @@
 class TrayIcon {
  private:
   HWND hwnd_;
-  GUID icon_guid_;
+  UINT icon_uid_;
   void ShowPopupMenu();
  public:
   TrayIcon(HWND hwnd);

@@ -1,20 +1,16 @@
 #include "tray_icon.h"
 
 TrayIcon::TrayIcon(HWND hwnd)
-    : hwnd_(hwnd),
-      icon_guid_{0xd86b1327,
-                 0xfff2,
-                 0x4f76,
-                 {0xa3, 0x34, 0xcb, 0x1f, 0x81, 0xc1, 0xcd, 0x25}} {}
+    : hwnd_(hwnd), icon_uid_(1) {}
 
 bool TrayIcon::AddTrayIcon(HICON icon) {
   NOTIFYICONDATA nid = {};
   nid.cbSize = sizeof(nid);
   nid.hWnd = hwnd_;
-  nid.uFlags = NIF_ICON | NIF_GUID | NIF_MESSAGE;
+  nid.uFlags = NIF_ICON | NIF_MESSAGE;
   nid.uCallbackMessage = APPWM_NOTIFYICON;
 
-  nid.guidItem = icon_guid_;
+  nid.uID = icon_uid_;
   nid.hIcon = icon;
 
   int retry = 0;
@@ -28,10 +24,9 @@ bool TrayIcon::AddTrayIcon(HICON icon) {
 }
 
 bool TrayIcon::RemoveTrayIcon() { 
-  NOTIFYICONDATA icon_data;
+  NOTIFYICONDATA icon_data = {};
   icon_data.cbSize = sizeof(icon_data);
-  icon_data.uFlags = NIF_GUID;
-  icon_data.guidItem = icon_guid_;
+  icon_data.uID = icon_uid_;
   return Shell_NotifyIcon(NIM_DELETE, &icon_data);
 }
 

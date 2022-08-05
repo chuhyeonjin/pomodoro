@@ -13,7 +13,7 @@ class TrayIcon {
  public:
   TrayIcon(HWND hwnd);
   // RETURN: sucess to create tray icon -> true 
-  bool AddTrayIcon(HICON icon);
+  bool AddTrayIcon(HICON icon, WCHAR* window_title);
   bool RemoveTrayIcon();
   LRESULT CALLBACK HandleEvent(WPARAM wParam, LPARAM lParam);
 };

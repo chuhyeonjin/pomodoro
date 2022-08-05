@@ -154,7 +154,7 @@ bool PomodoroApp::Initialize(LPWSTR cmd_line, int cmd_show) {
 
   tray_icon_ = TrayIcon(hwnd_);
   tray_icon_.AddTrayIcon(
-      LoadIcon(hinstance_, MAKEINTRESOURCE(IDI_SHORT_BREAK)));
+      LoadIcon(hinstance_, MAKEINTRESOURCE(IDI_SHORT_BREAK)), window_title_);
 
   pomodoro_timer_ = PomodoroTimer(hwnd_);
 
@@ -389,7 +389,7 @@ LRESULT CALLBACK PomodoroApp::WndProc(HWND hwnd, UINT message, WPARAM wParam,
 
   if (message == taskbar_restart_message)
     pomodoro_app->tray_icon_.AddTrayIcon(
-        LoadIcon(pomodoro_app->hinstance_, MAKEINTRESOURCE(IDI_SHORT_BREAK)));
+        LoadIcon(pomodoro_app->hinstance_, MAKEINTRESOURCE(IDI_SHORT_BREAK)), pomodoro_app->window_title_);
 
   switch (message) {
     case WM_PAINT: {

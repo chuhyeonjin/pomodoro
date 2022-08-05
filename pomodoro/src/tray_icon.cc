@@ -3,19 +3,19 @@
 TrayIcon::TrayIcon(HWND hwnd)
     : hwnd_(hwnd), icon_uid_(1) {}
 
-bool TrayIcon::AddTrayIcon(HICON icon) {
-  NOTIFYICONDATA nid = {};
-  nid.cbSize = sizeof(nid);
-  nid.hWnd = hwnd_;
-  nid.uFlags = NIF_ICON | NIF_MESSAGE;
-  nid.uCallbackMessage = APPWM_NOTIFYICON;
-
-  nid.uID = icon_uid_;
-  nid.hIcon = icon;
+bool TrayIcon::AddTrayIcon(HICON icon, WCHAR* window_title) {
+  NOTIFYICONDATA icon_data = {};
+  icon_data.cbSize = sizeof(icon_data);
+  icon_data.hWnd = hwnd_;
+  icon_data.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
+  icon_data.uCallbackMessage = APPWM_NOTIFYICON;
+  icon_data.uID = icon_uid_;
+  icon_data.hIcon = icon;
+  StringCchCopy(icon_data.szTip, ARRAYSIZE(icon_data.szTip), window_title);
 
   int retry = 0;
   const int max_retry = 20;
-  while (!Shell_NotifyIcon(NIM_ADD, &nid)) {
+  while (!Shell_NotifyIcon(NIM_ADD, &icon_data)) {
     if (retry++ < max_retry) return false;
     Sleep(80);
   }
@@ -27,6 +27,7 @@ bool TrayIcon::RemoveTrayIcon() {
   NOTIFYICONDATA icon_data = {};
   icon_data.cbSize = sizeof(icon_data);
   icon_data.uID = icon_uid_;
+  icon_data.hWnd = hwnd_;
   return Shell_NotifyIcon(NIM_DELETE, &icon_data);
 }
 

@@ -14,6 +14,7 @@ class TrayIcon {
   TrayIcon(HWND hwnd);
   // RETURN: sucess to create tray icon -> true 
   bool AddTrayIcon(HICON icon, WCHAR* window_title);
+  bool SetIcon(HICON icon);
   bool RemoveTrayIcon();
   LRESULT CALLBACK HandleEvent(WPARAM wParam, LPARAM lParam);
 };

@@ -11,7 +11,7 @@ inline void SafeRelease(Interface** ppInterfaceToRelease) {
 }
 
 PomodoroApp::PomodoroApp(HINSTANCE hinstance)
-    : hinstance_(hinstance), tray_icon_(nullptr), pomodoro_timer_(nullptr) {}
+    : hinstance_(hinstance), tray_icon_(nullptr), pomodoro_timer_(nullptr, nullptr) {}
 
 PomodoroApp::~PomodoroApp() {
   SafeRelease(&direct2d_factory_);
@@ -153,10 +153,9 @@ bool PomodoroApp::Initialize(LPWSTR cmd_line, int cmd_show) {
   if (!InitializeWindow(cmd_line, cmd_show)) return FALSE;
 
   tray_icon_ = TrayIcon(hwnd_);
-  tray_icon_.AddTrayIcon(
-      LoadIcon(hinstance_, MAKEINTRESOURCE(IDI_SHORT_BREAK)), window_title_);
-
-  pomodoro_timer_ = PomodoroTimer(hwnd_);
+  pomodoro_timer_ = PomodoroTimer(hwnd_, tray_icon_);
+  tray_icon_.AddTrayIcon(pomodoro_timer_.GetIcon(),
+                         window_title_);
 
   ShowWindow(hwnd_, cmd_show);
   UpdateWindow(hwnd_);

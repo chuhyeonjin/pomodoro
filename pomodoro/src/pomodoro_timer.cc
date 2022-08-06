@@ -5,18 +5,19 @@ const UINT SHORT_BREAK_TIME = 60 * 5;
 const UINT LONG_BREAK_TIME = 60 * 20;
 const UINT LONG_BREAK_INTERVAL = 4;
 
-PomodoroTimer::PomodoroTimer(HWND hwnd)
+PomodoroTimer::PomodoroTimer(HWND hwnd, TrayIcon tray_icon)
     : hwnd_(hwnd),
       mode_(TimerMode::Work),
       remaining_seconds_(WORK_TIME),
       round_(1),
-      is_paused_(true) {}
+      is_paused_(true),
+			tray_icon_(tray_icon) {}
 
 LRESULT CALLBACK PomodoroTimer::HandleTick() {
   if (--remaining_seconds_ < 0) {
     NextMode();
   }
-  RedrawWindow(hwnd_, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+  RedrawWindow(hwnd_, nullptr, nullptr, RDW_INVALIDATE | RDW_UPDATENOW);
   return 0;
 }
 
@@ -35,6 +36,7 @@ void PomodoroTimer::NextMode() {
       break;
   }
   SetRemainingSecondByMode();
+  tray_icon_.SetIcon(GetIcon());
 }
 
 void PomodoroTimer::SetRemainingSecondByMode() {
@@ -103,6 +105,18 @@ void PomodoroTimer::GetRoundString(WCHAR*& str) {
   std::wstring result(L"Round ");
   result += std::to_wstring(round_);
   memcpy(str, result.c_str(), (result.size() + 1) * sizeof(WCHAR));
+}
+
+HICON PomodoroTimer::GetIcon() {
+  const auto hinstance = (HINSTANCE)GetWindowLongPtrW(hwnd_, GWLP_HINSTANCE);
+  switch (mode_) {
+    case TimerMode::Work:
+      return LoadIcon(hinstance, MAKEINTRESOURCE(IDI_POMODORO));
+    case TimerMode::ShortBreak:
+      return LoadIcon(hinstance, MAKEINTRESOURCE(IDI_SHORT_BREAK));
+    case TimerMode::LongBreak:
+      return LoadIcon(hinstance, MAKEINTRESOURCE(IDI_LONG_BREAK));
+  }
 }
 
 FLOAT PomodoroTimer::GetRemainingTimePercent() {

@@ -2,6 +2,7 @@
 
 #include "../resource/Resource.h"
 #include "framework.h"
+#include "tray_icon.h"
 
 enum class TimerMode {
   Work,
@@ -11,7 +12,7 @@ enum class TimerMode {
 
 class PomodoroTimer {
  public:
-  PomodoroTimer(HWND hwnd);
+  PomodoroTimer(HWND hwnd, TrayIcon tray_icon);
   LRESULT CALLBACK HandleTick();
   void NextMode();
   D2D1_COLOR_F GetBackgroundColor();
@@ -21,6 +22,7 @@ class PomodoroTimer {
   void GetRemainingSecondString(WCHAR*& str);
   void GetRoundString(WCHAR*& str);
   FLOAT GetRemainingTimePercent();
+  HICON GetIcon();
   bool IsPaused();
   void TogglePause();
   
@@ -30,6 +32,7 @@ class PomodoroTimer {
   INT remaining_seconds_;
   UINT16 round_;
   bool is_paused_;
+  TrayIcon tray_icon_;
 
   void SetRemainingSecondByMode();
 };

@@ -23,6 +23,17 @@ bool TrayIcon::AddTrayIcon(HICON icon, WCHAR* window_title) {
   return true;
 }
 
+bool TrayIcon::SetIcon(HICON icon) {
+  NOTIFYICONDATA icon_data = {};
+  icon_data.cbSize = sizeof(icon_data);
+  icon_data.hWnd = hwnd_;
+  icon_data.uFlags = NIF_ICON;
+  icon_data.uID = icon_uid_;
+  icon_data.hIcon = icon;
+
+	return Shell_NotifyIcon(NIM_MODIFY, &icon_data);
+} 
+
 bool TrayIcon::RemoveTrayIcon() { 
   NOTIFYICONDATA icon_data = {};
   icon_data.cbSize = sizeof(icon_data);

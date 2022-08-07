@@ -35,4 +35,5 @@ class PomodoroTimer {
   TrayIcon tray_icon_;
 
   void SetRemainingSecondByMode();
+  void ShowNotificationByMode();
 };

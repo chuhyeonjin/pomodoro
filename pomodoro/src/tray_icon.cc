@@ -19,7 +19,6 @@ bool TrayIcon::AddTrayIcon(HICON icon, WCHAR* window_title) {
     if (retry++ < max_retry) return false;
     Sleep(80);
   }
-
   return true;
 }
 
@@ -32,7 +31,19 @@ bool TrayIcon::SetIcon(HICON icon) {
   icon_data.hIcon = icon;
 
 	return Shell_NotifyIcon(NIM_MODIFY, &icon_data);
-} 
+}
+
+bool TrayIcon::ShowNotification(const WCHAR* title, const WCHAR* message) {
+  NOTIFYICONDATA icon_data = {};
+  icon_data.cbSize = sizeof(icon_data);
+  icon_data.hWnd = hwnd_;
+  icon_data.uFlags = NIF_INFO;
+  icon_data.uID = icon_uid_;
+  StringCchCopy(icon_data.szInfoTitle, ARRAYSIZE(icon_data.szInfoTitle), title);
+  StringCchCopy(icon_data.szInfo, ARRAYSIZE(icon_data.szInfo), message);
+
+  return Shell_NotifyIcon(NIM_MODIFY, &icon_data);
+}
 
 bool TrayIcon::RemoveTrayIcon() { 
   NOTIFYICONDATA icon_data = {};

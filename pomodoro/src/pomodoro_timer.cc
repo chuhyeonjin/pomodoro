@@ -1,9 +1,9 @@
 #include "pomodoro_timer.h"
 
-const UINT WORK_TIME = 60 * 30;
-const UINT SHORT_BREAK_TIME = 60 * 5;
-const UINT LONG_BREAK_TIME = 60 * 20;
-const UINT LONG_BREAK_INTERVAL = 4;
+constexpr UINT WORK_TIME = 60 * 30;
+constexpr UINT SHORT_BREAK_TIME = 60 * 5;
+constexpr UINT LONG_BREAK_TIME = 60 * 20;
+constexpr UINT LONG_BREAK_INTERVAL = 4;
 
 PomodoroTimer::PomodoroTimer(HWND hwnd, TrayIcon tray_icon)
     : hwnd_(hwnd),
@@ -36,6 +36,7 @@ void PomodoroTimer::NextMode() {
       break;
   }
   SetRemainingSecondByMode();
+  ShowNotificationByMode();
   tray_icon_.SetIcon(GetIcon());
 }
 
@@ -49,6 +50,20 @@ void PomodoroTimer::SetRemainingSecondByMode() {
       break;
     case TimerMode::LongBreak:
       remaining_seconds_ = LONG_BREAK_TIME;
+      break;
+  }
+}
+
+void PomodoroTimer::ShowNotificationByMode() {
+  switch (mode_) {
+    case TimerMode::Work:
+      tray_icon_.ShowNotification(L"Pomodoro", L"Time to work!");
+      break;
+    case TimerMode::ShortBreak:
+      tray_icon_.ShowNotification(L"Pomodoro", L"Time to take a short break!");
+      break;
+    case TimerMode::LongBreak:
+      tray_icon_.ShowNotification(L"Pomodoro", L"Time to take a long break!");
       break;
   }
 }
